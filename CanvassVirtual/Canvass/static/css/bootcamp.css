@@ -1,0 +1,89 @@
+@import url(http://fonts.googleapis.com/css?family=Audiowide);
+
+body {
+  background-color: #f6f6f6;
+}
+
+header {
+  border-bottom: 3px solid #00B1CF;
+  background-color: #006389;
+  padding: .4em 0;
+}
+
+header h1 {
+  font-size: 1.8em;
+  font-weight: 200;
+  font-family: "Audiowide", cursive;
+  margin: 0;
+  float: left;
+}
+
+header h1 a {
+  color: #92c35e;
+}
+
+header h1 a:hover {
+  text-decoration: none;
+  color: #a0dc7a;
+}
+
+header ul.menu {
+  float: left;
+  font-size: 1em;
+  margin-left: 1em;
+}
+
+header ul.menu li.active a {
+  color: #00b1cf;
+}
+
+header ul.settings {
+  float: right;
+  font-size: 0.8em;
+}
+
+header ul {
+  float: right;
+  margin: 0;
+  padding: .3em 0 0 0;
+}
+
+header ul li {
+  display: inline;
+  list-style: none;
+  margin-left: .8em;
+}
+
+header ul li a {
+  color: #f6f6f6;
+  font-weight: 500;
+}
+
+header ul li a:hover {
+  color: #92c35e;
+  text-decoration: none;
+}
+
+header ul.settings li.user {
+  font-size: 1.2em;
+}
+
+main .container {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  border: 1px solid #ddd;
+  background-color: #ffffff;
+  padding-top: 1.2em;
+  padding-bottom: 1.2em;
+  border-radius: .3em;
+  box-shadow: 0 1px 3px #cccccc;
+}
+
+.page-header {
+  margin: 0;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-weight: 100;
+}
