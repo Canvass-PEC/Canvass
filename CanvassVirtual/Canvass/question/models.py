@@ -6,7 +6,7 @@ User=get_user_model()
 class Question(models.Model):
     user=models.ForeignKey(User,null=False,on_delete="CASCADE")
     title=models.CharField(max_length=250)
-    description=models.TextField(max_length=350,null=False,blank=False)
+    description=models.TextField(max_length=1000,null=False,blank=False)
     created_on=models.DateTimeField(auto_now_add=True)
 
     class Meta:
