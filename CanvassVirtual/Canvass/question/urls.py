@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from .views import home,ask
+from .views import home,ask,answer
 app_name="question"
+
 urlpatterns = [
     path('',home,name='home'),
     path('ask',ask,name='ask'),
+    path('<int:id>',answer,name='answer'),
 ]

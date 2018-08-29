@@ -13,7 +13,11 @@ class Question(models.Model):
         ordering=['-created_on']
 
     def __str__(self):
-        return "{} \n Asked by:{}".format(self.title,self.asked_by.user)
+        return "{} \n Asked by:{}".format(self.title,self.user.username)
+
+    def get_answers(self):
+        return Answer.objects.filter(question=self)
+
 
 class Answer(models.Model):
     user=models.ForeignKey(User,null=False,on_delete="CASCADE")
