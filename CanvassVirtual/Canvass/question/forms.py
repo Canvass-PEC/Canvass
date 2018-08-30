@@ -11,7 +11,7 @@ class QuestionForm(forms.ModelForm):
 
 
 class AnswerForm(forms.ModelForm):
-    question = forms.ModelChoiceField(widget=forms.HiddenInput(), queryset=Question.objects.all())
+    question = forms.ModelChoiceField(widget=forms.HiddenInput(),queryset=Question.objects.all())
     description = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}))
 
     class Meta:

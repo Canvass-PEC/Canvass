@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load static %}
+{% block head %}
+  <link href="{% static 'css/questions.css' %}" rel="stylesheet">
+  <script src="{% static 'js/questions.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+      <span class="glyphicon glyphicon-share-alt"></span> Ask Question
+    <h1>Questions</h1>
+  </div>
+  <div class="questions">
+    {% for question in questions %}
+
+    <div class="panel panel-default question" question-id="{{ question.id }}">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          <a href="{% url 'question:answer' question.pk %}">{{ question.title }}</a>
+          <span class="badge pull-right">{{ question.get_answers_count }}</span>
+        </h3>
+      </div>
+      <div class="panel-body">
+        <div class="question-user">
+          <a href="#"><img src="{% static 'img/user.png' %}" class="user"></a>
+          <a href="#" class="username">{{ question.user.user_name }}</a>
+          <span class="asked">asked {{ question.created_on|naturaltime }}</span>
+        </div>
+        <p>{{ question.get_description_preview }}</p>
+      </div>
+    </div>
+      {% empty %}
+      <h4 style="text-align: center; padding: 1em 0;">No question to display</h4>
+    {% endfor %}
+  </div>
+{% endblock %}

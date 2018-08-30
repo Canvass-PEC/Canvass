@@ -4,7 +4,8 @@ from django.shortcuts import render
 from .forms import QuestionForm,AnswerForm
 from .models import Question
 def home(req):
-    return render(req,'base.html')
+    questions=Question.objects.all()
+    return render(req,'question/questions.html',{'questions':questions})
 
 def ask(req):
     form=QuestionForm(req.POST or None)

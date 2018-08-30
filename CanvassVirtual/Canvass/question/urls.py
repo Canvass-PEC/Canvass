@@ -19,7 +19,7 @@ from .views import home,ask,answer
 app_name="question"
 
 urlpatterns = [
-    path('',home,name='home'),
+    path('',home,name='questions'),
     path('ask',ask,name='ask'),
     path('<int:id>',answer,name='answer'),
 ]

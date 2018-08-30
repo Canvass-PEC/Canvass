@@ -18,6 +18,14 @@ class Question(models.Model):
     def get_answers(self):
         return Answer.objects.filter(question=self)
 
+    def get_answers_count(self):
+        return Answer.objects.filter(question=self).count()
+
+    def get_description_preview(self):
+        if len(self.description) > 255:
+            return u'{0}...'.format(self.description[:255])
+        else:
+            return self.description
 
 class Answer(models.Model):
     user=models.ForeignKey(User,null=False,on_delete="CASCADE")
