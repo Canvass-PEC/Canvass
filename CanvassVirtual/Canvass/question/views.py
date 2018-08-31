@@ -1,5 +1,4 @@
-from django.shortcuts import render
-
+from django.shortcuts import render,HttpResponse
 # Create your views here.
 from .forms import QuestionForm,AnswerForm
 from .models import Question
@@ -14,6 +13,13 @@ def ask(req):
     pass
 
 def answer(req,id):
+    if req.method=="POST":
+        form = AnswerForm(req.POST)
+        Ans = form.save(commit=False)
+        Ans.user = req.user
+        Ans.save()
+
     question = Question.objects.get(pk=id)
     form = AnswerForm(initial={'question': question})
     return render(req,'question/answer.html', {'question': question, 'form': form})
+

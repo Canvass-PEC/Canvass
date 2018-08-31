@@ -34,26 +34,34 @@
   <h4 class="page-header">Answers</h4>
   <div class="answers">
     {% for answer in question.get_answers %}
-      <div class="row answer" answer-id="{{ answer.id }}">
-        {% csrf_token %}
-        <div class="col-md-1 options">
-          <span class="glyphicon glyphicon-chevron-up vote"></span>
-          <span>0</span>
-          <span class="glyphicon glyphicon-chevron-down vote"></span>
-        </div>
+
+    <div class="row answer" answer-id="{{ answer.id }}">
 
         <div class="col-md-11">
           <div class="answer-user">
             <a href="#"><img src="{% static 'img/user.png' %}" class="user"></a>
-            <a href="#" class="username">{{ answer.user.get_full_name }}</a>
+            <a href="#" class="username">{{ answer.user.username }}</a>
             <small class="answered">answered {{ answer.created_on|naturaltime }}</small>
           </div>
           <p>{{ answer.description }}</p>
-        </div>
       </div>
+
+    </div>
       <hr>
     {% endfor %}
     </div>
+
+<h4>Your Answer</h4>
+    <form  method="POST" action="{% url 'question:answer' question.pk %}" id="ajax_ans">
+      {% csrf_token %}
+      {{ form.question }}
+      <div class="form-group">
+        {{ form.description }}
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Post Your Answer</button>
+      </div>
+    </form>
 {% endblock %}
 
 
