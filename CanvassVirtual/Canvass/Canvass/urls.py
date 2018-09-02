@@ -19,5 +19,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('questions/',include('question.urls',namespace='questions')),
     path('articles/',include('article.urls',namespace='articles')),
-    path('',include('feed.urls',namespace='')),
+    path('',include('feed.urls',namespace='feed')),
 ]
