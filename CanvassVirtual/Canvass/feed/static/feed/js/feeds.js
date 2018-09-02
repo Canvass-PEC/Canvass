@@ -136,6 +136,7 @@ $(function () {
   });
 
   var load_feeds = function () {
+    alert('go');
     var page = $("#load_feed input[name='page']").val();
     if (page != "-1") {
       var next_page = parseInt($("#load_feed input[name='page']").val()) + 1;

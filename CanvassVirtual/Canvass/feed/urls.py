@@ -24,6 +24,6 @@ urlpatterns = [
     path('post',post,name='post'),
     path('check',check,name='check'),
     path('load_new',load_new,name='load_new'),
-    path('laod',load,name='load'),
+    path('load',load,name='load'),
     path('comment',comment,name='comment'),
 ]
