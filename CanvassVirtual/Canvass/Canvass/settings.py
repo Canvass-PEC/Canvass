@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'question',
     'article',
+    'feed',
+    'activity'
 ]
 
 MIDDLEWARE = [

@@ -15,9 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from .views import feeds,like,comment,load_new,load,_html_feeds,check,post
+app_name="feed"
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('questions/',include('question.urls',namespace='questions')),
-    path('articles/',include('article.urls',namespace='articles')),
-    path('',include('feed.urls',namespace='')),
+    path('',feeds,name='feeds'),
+    path('like',like,name='like'),
+    path('post',like,name='post'),
+    path('check',check,name='check'),
+    path('load_new',load_new,name='load_new'),
+    path('laod',load,name='load'),
+    path('comment',comment,name='comment'),
+    path('_html_feeds',_html_feeds,name='_html_feeds'),
+    path('post',post,name='post'),
 ]
