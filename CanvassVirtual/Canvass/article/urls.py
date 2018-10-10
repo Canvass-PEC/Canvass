@@ -25,5 +25,5 @@ urlpatterns = [
     path('drafts',drafts,name='drafts'),
     path('comment',comment,name='comment'),
     path('edit',edit,name='edit'),
-    path('<str:slug>',article,name='article'),
+    path('<str:slug>/',article,name='article'),
 ]

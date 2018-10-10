@@ -10,8 +10,8 @@
             {{ article.create_date }}
           </span>
           <span class="user">
-            <a href="{% url 'my_auth:profile' article.create_user.username %}"><img src="{{ article.create_user.profile.get_picture }}"></a>
-            <a href="{% url 'my_auth:profile' article.create_user.username %}">{{ article.create_user.profile.get_screen_name }}</a>
+            <a href="{% url 'core:profile' article.create_user.username %}"><img src="{{ article.create_user.profile.get_picture }}"></a>
+            <a href="{% url 'core:profile' article.create_user.username %}">{{ article.create_user.profile.get_screen_name }}</a>
           </span>
         </div>
         <div class="article-content">{{ article.get_summary_as_markdown|safe }}</div>
