@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static  %}
 
 {% block head %}
   <link href="{% static 'feed/css/feeds.css' %}" rel="stylesheet">
@@ -7,16 +7,13 @@
   <script src="{% static 'feed/js/feeds.js' %}"></script>
 {% endblock head %}
 
-{% block title %}Feed{% endblock %}
-
-{% block content %}
+{% block main %}
   <div class="page-header">
     <button type="button" class="btn btn-primary pull-right btn-compose" title="Press Ctrl + P to compose">
       <span class="glyphicon glyphicon-share-alt"></span> Compose
     </button>
-    <h1>Feeds</h1>
+    <h1>Feed</h1>
   </div>
-
   <div class="compose">
     <h2>Compose a new post</h2>
     <form role="form" id="compose-form">
@@ -27,28 +24,28 @@
       </div>
       <div class="form-group">
         <button type="button" class="btn btn-primary btn-post">
-          <span class="glyphicon glyphicon-ok"></span> Post
+          <span class="glyphicon glyphicon-send"></span> Post
         </button>
         <button type="button" class="btn btn-default btn-cancel-compose">Cancel</button>
+        <span class="help-block help-count pull-right">255</span>
       </div>
     </form>
   </div>
-
   <div class="stream-update">
     <a href="#"><span class="new-posts"></span> new posts</a>
   </div>
-
   <ul class="stream">
     {% for feed in feeds %}
       {% include 'feeds/partial_feed.html' with feed=feed %}
     {% endfor %}
   </ul>
-
   <div class="load">
     <img src="{% static 'img/loading.gif' %}">
   </div>
   <form method="get" action="{% url 'feed:load' %}" id="load_feed" autocomplete="off">
+    <input type="hidden" name="feed
+    _source" id="feed_source" value="all">
     <input type="hidden" name="from_feed" value="{{ from_feed }}">
     <input type="hidden" name="page" value="{{ page }}">
   </form>
-{% endblock  %}
+{% endblock main %}

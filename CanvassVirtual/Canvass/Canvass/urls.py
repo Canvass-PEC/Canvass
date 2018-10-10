@@ -15,9 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('questions/',include('question.urls',namespace='questions')),
     path('articles/',include('article.urls',namespace='articles')),
-    path('',include('feed.urls',namespace='feed')),
-]
+    path('feeds/',include('feed.urls',namespace='feed')),
+    path('',include('core.urls',namespace='core')),
+    path('notifications/',include('activity.urls',namespace='activity')),
+    path('messages/',include('message.urls',namespace='messages')),
+    path('search/',include('search.urls',namespace='search')),
+    path('auth/',include('my_auth.urls',namespace='my_auth')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

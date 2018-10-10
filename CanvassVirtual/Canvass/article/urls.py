@@ -15,10 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from .views import home,write
+from .views import articles,write,preview,drafts,comment,edit,article
 app_name="article"
 
 urlpatterns = [
-    path('',home,name='home'),
+    path('',articles,name='articles'),
     path('write',write,name='write'),
+    path('preview',preview,name='preview'),
+    path('drafts',drafts,name='drafts'),
+    path('comment',comment,name='comment'),
+    path('edit',edit,name='edit'),
+    path('<str:slug>',article,name='article'),
 ]

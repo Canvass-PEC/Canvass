@@ -1,0 +1,27 @@
+{% extends 'messages/base_messages.html' %}
+
+{% block title %}Inbox{% endblock %}
+
+{% block page_header %}Inbox{% endblock %}
+
+{% block container %}
+  {% if messages %}
+  <ul class="conversation">
+    {% for message in messages %}
+      {% include 'messages/includes/partial_message.html' with message=message %}
+    {% endfor %}
+    <li class="send-message">
+      <img src="{{ user.profile.get_picture }}" class="picture">
+      <div style="margin-top: .3em">
+        <form role="form" method="post" action="{% url 'messages:send' %}" id="send">
+          {% csrf_token %}
+          <input type="hidden" name="to" value="{{ active }}">
+          <input class="form-control" type="text" name="message" placeholder="Write a message..." maxlength="1000" autocomplete="off">
+        </form>
+      </div>
+    </li>
+  </ul>
+  {% else %}
+    <h4>Your inbox is empty!</h4>
+  {% endif %}
+{% endblock container %}

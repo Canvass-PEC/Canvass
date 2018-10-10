@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %} Articles {% endblock %}
+
+{% block head %}
+  <link href="{% static 'articles/css/articles.css' %}" rel="stylesheet">
+{% endblock head %}
+
+{% block content %}
+  <div class="page-header">
+    <a href="{% url 'article:write' %}" class="btn btn-primary pull-right">
+      <span class="glyphicon glyphicon-pencil"></span> Write Article
+    </a>
+    <a href="{% url 'article:drafts' %}" class="btn btn-default pull-right" style="margin-right: .8em">Drafts</a>
+    <h1>Articles</h1>
+  </div>
+  <div class="row">
+    <div class="col-md-10">
+      <section class="articles">
+        {% for article in articles %}
+          {% include 'articles/partial_article.html' with article=article %}
+        {% empty %}
+          <h4 class="no-data">There is no published article yet. <a href="{% url 'article:write' %}">Be the first one to publish!</a></h4>
+        {% endfor %}
+      </section>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      {% include 'paginator.html' with paginator=articles %}
+    </div>
+  </div>
+{% endblock %}

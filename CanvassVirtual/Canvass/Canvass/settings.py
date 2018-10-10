@@ -40,7 +40,11 @@ INSTALLED_APPS = [
     'question',
     'article',
     'feed',
-    'activity'
+    'activity',
+    'my_auth',
+    'core',
+    'search',
+    'message'
 ]
 
 MIDDLEWARE = [
@@ -103,6 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+ALLOWED_SIGNUP_DOMAINS = ['*']
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -125,3 +130,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+MEDIA_URL='/media/'
+MEDIA_ROOT=os.path.join(BASE_DIR,'media')

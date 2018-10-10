@@ -42,9 +42,12 @@ $(function () {
 
   $(".btn-post").click(function () {
     var last_feed = $(".stream li:first-child").attr("feed-id");
+    if (last_feed == undefined) {
+      last_feed = "0";
+    }
     $("#compose-form input[name='last_feed']").val(last_feed);
     $.ajax({
-      url: 'post',
+      url: '/feeds/post',
       data: $("#compose-form").serialize(),
       type: 'post',
       cache: false,
@@ -62,7 +65,7 @@ $(function () {
     var feed = $(li).attr("feed-id");
     var csrf = $(li).attr("csrf");
     $.ajax({
-      url: 'like',
+      url: '/feeds/like',
       data: {
         'feed': feed,
         'csrfmiddlewaretoken': csrf
@@ -96,7 +99,7 @@ $(function () {
       $(".comments input[name='post']", post).focus();
       var feed = $(post).closest("li").attr("feed-id");
       $.ajax({
-        url: 'comment',
+        url: '/feeds/comment',
         data: { 'feed': feed },
         cache: false,
         beforeSend: function () {
@@ -118,7 +121,7 @@ $(function () {
       var container = $(this).closest(".comments");
       var input = $(this);
       $.ajax({
-        url: 'comment',
+        url: '/feeds/comment',
         data: $(form).serialize(),
         type: 'post',
         cache: false,
@@ -136,13 +139,12 @@ $(function () {
   });
 
   var load_feeds = function () {
-    alert('go');
-    var page = $("#load_feed input[name='page']").val();
-    if (page != "-1") {
+    if (!$("#load_feed").hasClass("no-more-feeds")) {
+      var page = $("#load_feed input[name='page']").val();
       var next_page = parseInt($("#load_feed input[name='page']").val()) + 1;
       $("#load_feed input[name='page']").val(next_page);
       $.ajax({
-        url: 'load',
+        url: '/feeds/load',
         data: $("#load_feed").serialize(),
         cache: false,
         beforeSend: function () {
@@ -153,7 +155,7 @@ $(function () {
             $("ul.stream").append(data)
           }
           else {
-            $("#load_feed input[name='page']").val("-1");
+            $("#load_feed").addClass("no-more-feeds");
           }
         },
         complete: function () {
@@ -167,30 +169,42 @@ $(function () {
 
   function check_new_feeds () {
     var last_feed = $(".stream li:first-child").attr("feed-id");
-    $.ajax({
-      url: 'check',
-      data: { 'last_feed': last_feed },
-      cache: false,
-      success: function (data) {
-        if (parseInt(data) > 0) {
-          $(".stream-update .new-posts").text(data);
-          $(".stream-update").show();
-          $(document).attr("title", "(" + data + ") " + page_title);
+    var feed_source = $("#feed_source").val();
+    if (last_feed != undefined) {
+      $.ajax({
+        url: '/feeds/check',
+        data: {
+          'last_feed': last_feed,
+          'feed_source': feed_source
+        },
+        cache: false,
+        success: function (data) {
+          if (parseInt(data) > 0) {
+            $(".stream-update .new-posts").text(data);
+            $(".stream-update").show();
+            $(document).attr("title", "(" + data + ") " + page_title);
+          }
+        },
+        complete: function() {
+          window.setTimeout(check_new_feeds, 30000);
         }
-      },
-      complete: function() {
-        window.setTimeout(check_new_feeds, 30000);
-      }
-    });
+      });
+    }
+    else {
+      window.setTimeout(check_new_feeds, 30000);
+    }
   };
-
   check_new_feeds();
 
   $(".stream-update a").click(function () {
     var last_feed = $(".stream li:first-child").attr("feed-id");
+    var feed_source = $("#feed_source").val();
     $.ajax({
-      url: 'load_new',
-      data: { 'last_feed': last_feed },
+      url: '/feeds/load_new',
+      data: { 
+        'last_feed': last_feed,
+        'feed_source': feed_source
+      },
       cache: false,
       success: function (data) {
         $("ul.stream").prepend(data);
@@ -203,5 +217,100 @@ $(function () {
   });
 
   $("input,textarea").attr("autocomplete", "off");
+
+  function update_feeds () {
+    var first_feed = $(".stream li:first-child").attr("feed-id");
+    var last_feed = $(".stream li:last-child").attr("feed-id");
+    var feed_source = $("#feed_source").val();
+
+    if (first_feed != undefined && last_feed != undefined) {
+      $.ajax({
+        url: '/feeds/update',
+        data: {
+          'first_feed': first_feed,
+          'last_feed': last_feed,
+          'feed_source': feed_source
+        },
+        cache: false,
+        success: function (data) {
+          $.each(data, function(id, feed) {
+              var li = $("li[feed-id='" + id + "']");
+              $(".like-count", li).text(feed.likes);
+              $(".comment-count", li).text(feed.comments);
+          });
+        },
+        complete: function () {
+          window.setTimeout(update_feeds, 30000);
+        }
+      });
+    }
+    else {
+      window.setTimeout(update_feeds, 30000);
+    }
+  };
+  update_feeds();
+
+  function track_comments () {
+    $(".tracking").each(function () {
+      var container = $(this);
+      var feed = $(this).closest("li").attr("feed-id");
+      $.ajax({
+        url: '/feeds/track_comments',
+        data: {'feed': feed},
+        cache: false,
+        success: function (data) {
+          $("ol", container).html(data);
+          var post_container = $(container).closest(".post");
+          $(".comment-count", post_container).text($("ol li", container).length);
+        }
+      });
+    });
+    window.setTimeout(track_comments, 30000);
+  };
+  track_comments();
+
+  $("main").on("mouseenter", "ul.stream > li", function (event) {
+    var li = $(this);
+    $(li).children(".post").children(".remove-feed").show();
+  });
+
+  $("main").on("mouseleave", "ul.stream > li", function (event) {
+    var li = $(this);
+    $(li).children(".post").children(".remove-feed").hide();
+  });
+
+  $("ul.stream").on("mouseenter", "li div.post div.comments ol > li", function (event) {
+    var li = $(this);
+    $(li).children(".remove-feed").show();
+  });
+
+  $("ul.stream").on("mouseleave", "li div.post div.comments ol > li", function (event) {
+    var li = $(this);
+    $(li).children(".remove-feed").hide();
+  });
+
+  $("ul.stream").on("click", ".remove-feed", function () {
+    var li = $(this).closest("li");
+    var feed = $(li).attr("feed-id");
+    var csrf = $(li).attr("csrf");
+    $.ajax({
+      url: '/feeds/remove',
+      data: {
+        'feed': feed,
+        'csrfmiddlewaretoken': csrf
+      },
+      type: 'post',
+      cache: false,
+      success: function (data) {
+        $(li).fadeOut(400, function () {
+          $(li).remove();
+        });
+      }
+    });
+  });
+
+  $("#compose-form textarea[name='post']").keyup(function () {
+    $(this).count(255);
+  });
 
 });

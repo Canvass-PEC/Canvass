@@ -1,17 +1,17 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from .models import Feed
-from activity.models import Activity
+from activity.models import Activity, Notification
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template.loader import render_to_string
-from django.middleware import csrf
+from django.middleware.csrf import get_token
+import json
+from django.contrib.auth.decorators import login_required
+from Canvass.decorators import ajax_required
 
+FEEDS_NUM_PAGES = 10
 
-FEEDS_NUM_PAGES = 5
-
+@login_required
 def feeds(request):
     all_feeds = Feed.get_feeds()
     paginator = Paginator(all_feeds, FEEDS_NUM_PAGES)
@@ -25,10 +25,19 @@ def feeds(request):
         'page': 1,
         })
 
+def feed(request, pk):
+    feed = get_object_or_404(Feed, pk=pk)
+    return render(request, 'feeds/feed.html', {'feed': feed})
+
+@login_required
+@ajax_required
 def load(request):
     from_feed = request.GET.get('from_feed')
     page = request.GET.get('page')
+    feed_source = request.GET.get('feed_source')
     all_feeds = Feed.get_feeds(from_feed)
+    if feed_source != 'all':
+        all_feeds = all_feeds.filter(user__id=feed_source)
     paginator = Paginator(all_feeds, FEEDS_NUM_PAGES)
     try:
         feeds = paginator.page(page)
@@ -37,7 +46,7 @@ def load(request):
     except EmptyPage:
         feeds = []
     html = u''
-    csrf_token = csrf.get_token(request)
+    csrf_token = get_token(request)
     for feed in feeds:
         html = u'{0}{1}'.format(html, render_to_string('feeds/partial_feed.html', {
             'feed': feed,
@@ -47,8 +56,10 @@ def load(request):
         )
     return HttpResponse(html)
 
-def _html_feeds(last_feed, user, csrf_token):
+def _html_feeds(last_feed, user, csrf_token, feed_source='all'):
     feeds = Feed.get_feeds_after(last_feed)
+    if feed_source != 'all':
+        feeds = feeds.filter(user__id=feed_source)
     html = u''
     for feed in feeds:
         html = u'{0}{1}'.format(html, render_to_string('feeds/partial_feed.html', {
@@ -59,50 +70,116 @@ def _html_feeds(last_feed, user, csrf_token):
         )
     return html
 
+@login_required
+@ajax_required
 def load_new(request):
     last_feed = request.GET.get('last_feed')
     user = request.user
-    csrf_token = csrf.get_token(request)
+    csrf_token = get_token(request)
     html = _html_feeds(last_feed, user, csrf_token)
     return HttpResponse(html)
 
+@login_required
+@ajax_required
 def check(request):
     last_feed = request.GET.get('last_feed')
-    count = Feed.get_feeds_after(last_feed).count()
+    feed_source = request.GET.get('feed_source')
+    feeds = Feed.get_feeds_after(last_feed)
+    if feed_source != 'all':
+        feeds = feeds.filter(user__id=feed_source)
+    count = feeds.count()
     return HttpResponse(count)
 
+@login_required
+@ajax_required
 def post(request):
     last_feed = request.POST.get('last_feed')
     user = request.user
-    csrf_token = csrf.get_token(request)
+    csrf_token = get_token(request)
     feed = Feed()
     feed.user = user
-    feed.post = request.POST['post']
-    feed.save()
+    post = request.POST['post']
+    post = post.strip()
+    if len(post) > 0:
+        feed.post = post[:255]
+        feed.save()
     html = _html_feeds(last_feed, user, csrf_token)
     return HttpResponse(html)
 
+@login_required
+@ajax_required
 def like(request):
     feed_id = request.POST['feed']
     feed = Feed.objects.get(pk=feed_id)
     user = request.user
     like = Activity.objects.filter(activity_type=Activity.LIKE, feed=feed_id, user=user)
     if like:
+        user.profile.unotify_liked(feed)
         like.delete()
     else:
         like = Activity(activity_type=Activity.LIKE, feed=feed_id, user=user)
         like.save()
+        user.profile.notify_liked(feed)
     return HttpResponse(feed.calculate_likes())
 
+@login_required
+@ajax_required
 def comment(request):
     if request.method == 'POST':
         feed_id = request.POST['feed']
         feed = Feed.objects.get(pk=feed_id)
         post = request.POST['post']
-        user = request.user
-        feed.do_comment(user=user, post=post)
+        post = post.strip()
+        if len(post) > 0:
+            post = post[:255]
+            user = request.user
+            feed.comment(user=user, post=post)
+            user.profile.notify_commented(feed)
+            user.profile.notify_also_commented(feed)
         return render(request, 'feeds/partial_feed_comments.html', {'feed': feed})
     else:
         feed_id = request.GET.get('feed')
         feed = Feed.objects.get(pk=feed_id)
         return render(request, 'feeds/partial_feed_comments.html', {'feed': feed})
+
+@login_required
+@ajax_required
+def update(request):
+    first_feed = request.GET.get('first_feed')
+    last_feed = request.GET.get('last_feed')
+    feed_source = request.GET.get('feed_source')
+    feeds = Feed.get_feeds().filter(id__range=(last_feed, first_feed))
+    if feed_source != 'all':
+        feeds = feeds.filter(user__id=feed_source)
+    dump = {}
+    for feed in feeds:
+        dump[feed.pk] = {'likes': feed.likes, 'comments': feed.comments}
+    data = json.dumps(dump)
+    return HttpResponse(data, content_type='application/json')
+
+@login_required
+@ajax_required
+def track_comments(request):
+    feed_id = request.GET.get('feed')
+    feed = Feed.objects.get(pk=feed_id)
+    return render(request, 'feeds/partial_feed_comments.html', {'feed': feed})
+
+@login_required
+@ajax_required
+def remove(request):
+    try:
+        feed_id = request.POST.get('feed')
+        feed = Feed.objects.get(pk=feed_id)
+        if feed.user == request.user:
+            likes = feed.get_likes()
+            parent = feed.parent
+            for like in likes:
+                like.delete()
+            feed.delete()
+            if parent:
+                parent.calculate_comments()
+            return HttpResponse()
+        else:
+            return HttpResponseForbidden()
+    except Exception as e:
+        return HttpResponseBadRequest()

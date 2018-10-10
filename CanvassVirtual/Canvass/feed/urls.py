@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from .views import feeds,like,comment,load_new,load,check,post
+from .views import feeds,like,comment,load_new,load,check,post,update,track_comments,remove,feed
 app_name="feed"
 
 urlpatterns = [
@@ -26,4 +26,9 @@ urlpatterns = [
     path('load_new',load_new,name='load_new'),
     path('load',load,name='load'),
     path('comment',comment,name='comment'),
+    path('update',update,name='update'),
+    path('track_comments',track_comments,name='track_comments'),
+    path('remove',remove,name='remove'),
+    path('<int:pk>',feed,name='feed')
+
 ]

@@ -1,9 +1,8 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from django.contrib.auth.models import User
 from activity.models import Activity
+import bleach
+from django.utils.html import escape
 
 class Feed(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -18,7 +17,7 @@ class Feed(models.Model):
         verbose_name_plural = 'Feeds'
         ordering = ('-date',)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.post
 
     @staticmethod
@@ -35,7 +34,7 @@ class Feed(models.Model):
         return feeds
 
     def get_comments(self):
-        return Feed.objects.filter(parent=self)
+        return Feed.objects.filter(parent=self).order_by('date')
 
     def calculate_likes(self):
         likes = Activity.objects.filter(activity_type=Activity.LIKE, feed=self.pk).count()
@@ -43,16 +42,28 @@ class Feed(models.Model):
         self.save()
         return self.likes
 
-    def get_likers(self):
+    def get_likes(self):
         likes = Activity.objects.filter(activity_type=Activity.LIKE, feed=self.pk)
+        return likes
+
+    def get_likers(self):
+        likes = self.get_likes()
         likers = []
         for like in likes:
             likers.append(like.user)
         return likers
 
-    def do_comment(self, user, post):
-        comment = Feed(user=user, post=post, parent=self)
-        comment.save()
+    def calculate_comments(self):
         self.comments = Feed.objects.filter(parent=self).count()
         self.save()
         return self.comments
+
+    def comment(self, user, post):
+        feed_comment = Feed(user=user, post=post, parent=self)
+        feed_comment.save()
+        self.comments = Feed.objects.filter(parent=self).count()
+        self.save()
+        return feed_comment
+
+    def linkfy_post(self):
+        return bleach.linkify(escape(self.post))

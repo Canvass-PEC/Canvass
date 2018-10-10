@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.html import escape
 
 class Activity(models.Model):
     LIKE = 'L'
@@ -9,7 +10,7 @@ class Activity(models.Model):
         (LIKE, 'Like'),
         (UP_VOTE, 'Up Vote'),
         (DOWN_VOTE, 'Down Vote'),
-    )
+        )
 
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     activity_type = models.CharField(max_length=1, choices=ACTIVITY_TYPES)
@@ -19,8 +20,90 @@ class Activity(models.Model):
     answer = models.IntegerField(null=True, blank=True)
 
     class Meta:
-        verbose_name = "Activity"
-        verbose_name_plural = "Activities"
+        verbose_name = 'Activity'
+        verbose_name_plural = 'Activities'
 
     def __unicode__(self):
         return self.activity_type
+
+
+class Notification(models.Model):
+    LIKED = 'L'
+    COMMENTED = 'C'
+    ANSWERED = 'A'
+    ACCEPTED_ANSWER = 'W'
+    ALSO_COMMENTED = 'S'
+    NOTIFICATION_TYPES = (
+        (LIKED, 'Liked'),
+        (COMMENTED, 'Commented'),
+        (ANSWERED, 'Answered'),
+        (ACCEPTED_ANSWER, 'Accepted Answer'),
+        (ALSO_COMMENTED, 'Also Commented'),
+        )
+
+    _LIKED_TEMPLATE = u'<a href="/{0}/">{1}</a> liked your post: <a href="/feeds/{2}/">{3}</a>'
+    _COMMENTED_TEMPLATE = u'<a href="/{0}/">{1}</a> commented on your post: <a href="/feeds/{2}/">{3}</a>'
+    _ANSWERED_TEMPLATE = u'<a href="/{0}/">{1}</a> answered your question: <a href="/questions/{2}/">{3}</a>'
+    _EDITED_ARTICLE_TEMPLATE = u'<a href="/{0}/">{1}</a> edited your article: <a href="/article/{2}/">{3}</a>'
+    _ALSO_COMMENTED_TEMPLATE = u'<a href="/{0}/">{1}</a> also commentend on the post: <a href="/feeds/{2}/">{3}</a>'
+
+    from_user = models.ForeignKey(User, related_name='+',on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, related_name='+',on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    feed = models.ForeignKey('feed.Feed', null=True, blank=True,on_delete=models.CASCADE)
+    question = models.ForeignKey('question.Question', null=True, blank=True,on_delete=models.CASCADE)
+    answer = models.ForeignKey('question.Answer', null=True, blank=True,on_delete=models.CASCADE)
+    article = models.ForeignKey('article.Article', null=True, blank=True,on_delete=models.CASCADE)
+    notification_type = models.CharField(max_length=1, choices=NOTIFICATION_TYPES)
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = 'Notification'
+        verbose_name_plural = 'Notifications'
+        ordering = ('-date',)
+
+    def __str__(self):
+        if self.notification_type == self.LIKED:
+            return self._LIKED_TEMPLATE.format(
+                escape(self.from_user.username),
+                escape(self.from_user.profile.get_screen_name()),
+                self.feed.pk,
+                escape(self.get_summary(self.feed.post))
+                )
+        elif self.notification_type == self.COMMENTED:
+            return self._COMMENTED_TEMPLATE.format(
+                escape(self.from_user.username),
+                escape(self.from_user.profile.get_screen_name()),
+                self.feed.pk,
+                escape(self.get_summary(self.feed.post))
+                )
+        elif self.notification_type == self.ANSWERED:
+            return self._ANSWERED_TEMPLATE.format(
+                escape(self.from_user.username),
+                escape(self.from_user.profile.get_screen_name()),
+                self.question.pk,
+                escape(self.get_summary(self.question.title))
+                )
+        elif self.notification_type == self.EDITED_ARTICLE:
+            return self._EDITED_ARTICLE_TEMPLATE.format(
+                escape(self.from_user.username),
+                escape(self.from_user.profile.get_screen_name()),
+                self.article.slug,
+                escape(self.get_summary(self.article.title))
+                )
+        elif self.notification_type == self.ALSO_COMMENTED:
+            return self._ALSO_COMMENTED_TEMPLATE.format(
+                escape(self.from_user.username),
+                escape(self.from_user.profile.get_screen_name()),
+                self.feed.pk,
+                escape(self.get_summary(self.feed.post))
+                )
+        else:
+            return 'Ooops! Something went wrong.'
+
+    def get_summary(self, value):
+        summary_size = 50
+        if len(value) > summary_size:
+            return u'{0}...'.format(value[:summary_size])
+        else:
+            return value
