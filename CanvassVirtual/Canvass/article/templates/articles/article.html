@@ -3,15 +3,15 @@
 {% block title %}{{ article.title }}{% endblock %}
 
 {% block head %}
-  <link href="{% static 'articles/css/articles.css' %}" rel="stylesheet">
-  <script src="{% static 'articles/js/articles.js' %}"></script>
+  <link href="{% static 'article/css/articles.css' %}" rel="stylesheet">
+  <script src="{% static 'article/js/articles.js' %}"></script>
 {% endblock head %}
 
-{% block content %}
+{% block main %}
   <ol class="breadcrumb">
-    <li><a href="{% url 'article:articles' %}">{% trans 'Articles' %}</a></li>
-    <li class="active">{% trans 'Article' %}</li>
+    <li><a href="{% url 'article:articles' %}">Articles</a></li>
+    <li class="active">Article</li>
   </ol>
   {% include 'articles/partial_article.html' with article=article %}
   {% include 'articles/partial_article_comments.html' with article=article %}
-{% endblock %}
+{% endblock main %}

@@ -75,6 +75,12 @@ class Profile(models.Model):
                          feed=feed).save()
 
 
+    def notify_answered(self, question):
+        if self.user != question.user:
+            Notification(notification_type=Notification.ANSWERED,
+                from_user=self.user,
+                to_user=question.user,
+                question=question).save()
 
 
 def create_user_profile(sender, instance, created, **kwargs):

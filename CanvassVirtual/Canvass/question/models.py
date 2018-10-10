@@ -55,12 +55,11 @@ class Answer(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(null=True, blank=True)
     votes = models.IntegerField(default=0)
-    is_accepted = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Answer'
         verbose_name_plural = 'Answers'
-        ordering = ('-is_accepted', '-votes', 'create_date',)
+        ordering = ('-votes', 'create_date',)
 
     def __str__(self):
         return self.description

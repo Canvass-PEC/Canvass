@@ -14,8 +14,8 @@
       </div>
     </div>
     <div class="question-user">
-      <a href="{% url 'my_auth:profile' question.user.username %}"><img src="{{ question.user.profile.get_picture }}" class="user"></a>
-      <a href="{% url 'my_auth:profile' question.user.username %}" class="username">{{ question.user.profile.get_screen_name }}</a>
+      <a href="{% url 'core:profile' question.user.username %}"><img src="{{ question.user.profile.get_picture }}" class="user"></a>
+      <a href="{% url 'core:profile' question.user.username %}" class="username">{{ question.user.profile.get_screen_name }}</a>
       <span class="asked">asked {{ question.update_date|naturaltime }}</span>
     </div>
     <div class="question-description">

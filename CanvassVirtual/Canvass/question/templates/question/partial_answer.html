@@ -3,14 +3,14 @@
 <div class="row answer" answer-id="{{ answer.id }}">
   {% csrf_token %}
   <div class="col-md-1 options">
-    <span class="glyphicon glyphicon-chevron-up vote up-vote{% if user in answer.get_up_voters %} voted{% endif %}" title="{% trans 'Click to up vote; click again to toggle' %}"></span>
+    <span class="glyphicon glyphicon-chevron-up vote up-vote{% if user in answer.get_up_voters %} voted{% endif %}" title="Click to up vote; click again to toggle"></span>
     <span class="votes">{{ answer.votes }}</span>
-    <span class="glyphicon glyphicon-chevron-down vote down-vote{% if user in answer.get_down_voters %} voted{% endif %}" title="{% trans 'Click to down vote; click again to toggle' %}"></span>
+    <span class="glyphicon glyphicon-chevron-down vote down-vote{% if user in answer.get_down_voters %} voted{% endif %}" title="Click to down vote; click again to toggle"></span>
   </div>
   <div class="col-md-11">
     <div class="answer-user">
-      <a href="{% url 'my_auth:profile' answer.user.username %}"><img src="{{ answer.user.profile.get_picture }}" class="user"></a>
-      <a href="{% url 'my_auth:profile' answer.user.username %}" class="username">{{ answer.user.profile.get_screen_name }}</a>
+      <a href="{% url 'core:profile' answer.user.username %}"><img src="{{ answer.user.profile.get_picture }}" class="user"></a>
+      <a href="{% url 'core:profile' answer.user.username %}" class="username">{{ answer.user.profile.get_screen_name }}</a>
       <small class="answered">answered {{ answer.create_date|naturaltime }}</small>
     </div>
     <div class="answer-description">

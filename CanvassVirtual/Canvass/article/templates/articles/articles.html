@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %} Articles {% endblock %}
 
 {% block head %}
-  <link href="{% static 'articles/css/articles.css' %}" rel="stylesheet">
+  <link href="{% static 'article/css/articles.css' %}" rel="stylesheet">
 {% endblock head %}
 
-{% block content %}
+{% block main %}
   <div class="page-header">
     <a href="{% url 'article:write' %}" class="btn btn-primary pull-right">
       <span class="glyphicon glyphicon-pencil"></span> Write Article
@@ -30,4 +30,4 @@
       {% include 'paginator.html' with paginator=articles %}
     </div>
   </div>
-{% endblock %}
+{% endblock main %}

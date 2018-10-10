@@ -4,7 +4,7 @@
   <script src="{% static 'article/js/articles.js' %}"></script>
 {% endblock head %}
 
-{% block content %}
+{% block main %}
   <ol class="breadcrumb">
     <li><a href="{% url 'article:articles' %}">Articles</a></li>
     <li class="active">Write Article</li>
@@ -49,4 +49,4 @@
       </div>
     </div>
   </div>
-{% endblock %}
+{% endblock main %}

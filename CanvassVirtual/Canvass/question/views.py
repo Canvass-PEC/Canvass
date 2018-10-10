@@ -9,7 +9,7 @@ from Canvass.decorators import ajax_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 @login_required
-def questions(request, questions, active):
+def _questions(request, questions, active):
     paginator = Paginator(questions, 10)
     page = request.GET.get('page')
     try:
@@ -18,21 +18,19 @@ def questions(request, questions, active):
         questions = paginator.page(1)
     except EmptyPage:
         questions = paginator.page(paginator.num_pages)
-    return render(request, 'questions/questions.html', {'questions': questions, 'active': active})
+    return render(request, 'question/questions.html', {'questions': questions, 'active': active})
+
 
 @login_required
 def questions(request):
-    return unanswered(request)
+    questions = Question.objects.all()
+    return _questions(request, questions, 'unanswered')
 
 @login_required
 def answered(request):
     questions = Question.get_answered()
     return questions(request, questions, 'answered')
 
-@login_required
-def unanswered(request):
-    questions = Question.get_unanswered()
-    return questions(request, questions, 'unanswered')
 
 @login_required
 def all(request):
@@ -54,13 +52,13 @@ def ask(request):
             return render(request, 'questions/ask.html', {'form': form})
     else:
         form = QuestionForm()
-    return render(request, 'questions/ask.html', {'form': form})
+    return render(request, 'question/ask.html', {'form': form})
 
 @login_required
 def question(request, pk):
     question = get_object_or_404(Question, pk=pk)
     form = AnswerForm(initial={'question': question})
-    return render(request, 'questions/question.html', {'question': question, 'form': form})
+    return render(request, 'question/question.html', {'question': question, 'form': form})
 
 @login_required
 def answer(request):
@@ -77,7 +75,7 @@ def answer(request):
             return redirect(u'/questions/{0}/'.format(answer.question.pk))
         else:
             question = form.cleaned_data.get('question')
-            return render(request, 'questions/question.html', {'question': question, 'form': form})
+            return render(request, 'question/question.html', {'question': question, 'form': form})
     else:
         return redirect('/questions/')
 

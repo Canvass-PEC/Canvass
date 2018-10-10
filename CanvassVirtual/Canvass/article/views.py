@@ -18,8 +18,7 @@ def _articles(request, articles):
         articles = paginator.page(1)
     except EmptyPage:
         articles = paginator.page(paginator.num_pages)
-    popular_tags = Tag.get_popular_tags()
-    return render(request, 'articles/articles.html', {'articles': articles, 'popular_tags': popular_tags})
+    return render(request, 'articles/articles.html', {'articles': articles})
 
 @login_required
 def articles(request):
@@ -31,14 +30,6 @@ def article(request, slug):
     article = get_object_or_404(Article, slug=slug, status=Article.PUBLISHED)
     return render(request, 'articles/article.html', {'article': article})
 
-@login_required
-def tag(request, tag_name):
-    tags = Tag.objects.filter(tag=tag_name)
-    articles = []
-    for tag in tags:
-        if tag.article.status == Article.PUBLISHED:
-            articles.append(tag.article)
-    return _articles(request, articles)
 
 @login_required
 def write(request):
@@ -53,8 +44,6 @@ def write(request):
             if status in [Article.PUBLISHED, Article.DRAFT]:
                 article.status = form.cleaned_data.get('status')
             article.save()
-            tags = form.cleaned_data.get('tags')
-            article.create_tags(tags)
             return redirect('/articles/')
     else:
         form = ArticleForm()
@@ -67,12 +56,8 @@ def drafts(request):
 
 @login_required
 def edit(request, id):
-    tags = ''
     if id:
         article = get_object_or_404(Article, pk=id)
-        for tag in article.get_tags():
-            tags = u'{0} {1}'.format(tags, tag.tag)
-        tags = tags.strip()
     else:
         article = Article(create_user=request.user)
 
@@ -82,7 +67,7 @@ def edit(request, id):
             form.save()
             return redirect('/articles/')
     else:
-        form = ArticleForm(instance=article, initial={'tags': tags})
+        form = ArticleForm(instance=article)
     return render(request, 'articles/edit.html', {'form': form})
 
 

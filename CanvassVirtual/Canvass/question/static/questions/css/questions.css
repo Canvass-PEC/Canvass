@@ -2,6 +2,10 @@
   margin-top: 1em;
 }
 
+.questions .pagination {
+  margin: 0;
+}
+
 .questions .user {
   width: 25px;
   border-radius: 3px;
@@ -29,7 +33,7 @@
 
 .options {
   text-align: center;
-  
+
 }
 
 .options span {
@@ -44,6 +48,16 @@
 
 .options span.vote {
   font-size: 2em;
+  color: #ddd;
+}
+
+.options span.vote:hover {
+  cursor: pointer;
+  color: #428bca;
+}
+
+.options span.voted {
+  color: #333;
 }
 
 .options span.accept {
@@ -81,4 +95,31 @@
 .answer .answered, .question .asked {
   color: #aaaaaa;
   margin-left: .6em;
+}
+
+.favorite {
+  cursor: pointer;
+}
+
+.favorite:hover {
+  color: #f0ad4e;
+}
+
+.favorited {
+  color: #f0ad4e;
+}
+
+.question-info {
+  text-align: center;
+  float: right;
+  padding: 0 1em;
+}
+
+.question-info h5 {
+  margin: 0;
+  margin-bottom: .2em;
+}
+
+.question-info .info:first-child {
+  margin-bottom: 1.2em;
 }

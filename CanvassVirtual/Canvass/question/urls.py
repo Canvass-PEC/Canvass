@@ -15,16 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from .views import question,questions,answer,unanswered,answered,vote,ask,all
+from .views import question,questions,answer,answered,vote,ask,all
 app_name="question"
 
 urlpatterns = [
     path('',questions,name='questions'),
     path('ask',ask,name='ask'),
     path('answer',answer,name='answer'),
-    path('answer/vote',vote,name='vote'),
+    path('vote',vote,name='vote'),
     path('all',all,name='all'),
     path('answered',answered,name='answered'),
-    path('unanswered',unanswered,name='unanswered'),
-    path('<int:pk>',question,name='question'),
+    path('<int:pk>/',question,name='question'),
 ]
