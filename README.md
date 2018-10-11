@@ -1,5 +1,5 @@
 # Canvass
-
+![alt text](https://github.com/Canvass-PEC/Canvass/blob/master/Screenshot%20from%202018-10-11%2018-56-26.png "Login page")
 ## About Canvass
 Canvass is a chatting cum discussion forum built for our institution Punjab Engineering College.
 Our college comprises of various cultural clubs and technical societies, however the only means for them to communicate with each other is by means of Whatsapp groups. 
