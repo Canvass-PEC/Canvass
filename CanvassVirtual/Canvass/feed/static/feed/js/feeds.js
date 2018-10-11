@@ -165,11 +165,8 @@ $(function () {
     }
   };
 
-  $(window).scroll(function(){
-    if ($(window).scrollTop() == $(document).height()-$(window).height()){
-        load_feeds();
-    }
-});
+  $("#load_feed").bind("enterviewport", load_feeds).bullseye();
+
 
   function check_new_feeds () {
     var last_feed = $(".stream li:first-child").attr("feed-id");
