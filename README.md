@@ -26,6 +26,7 @@ Go to the directory where **manage.py** is present and type
 ```python
 python manage.py runserver
 ```
+![alt text](https://github.com/Canvass-PEC/Canvass/blob/master/Screenshot%20from%202018-10-11%2019-48-17.png "Terminal")
 in the terminal.Once this is done,goto   
 ```127.0.0.1/8000```   
 on your browser.
