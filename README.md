@@ -12,7 +12,7 @@ the second part of the project aims at allowing users to create their own intere
 ### Prerequisites
 
 The app is built using the following dependencies:
-*bleach==3.0.0 
+*bleach==3.0.0  
 Django==2.1 
 Markdown==3.0.1 
 Pillow==5.3.0 
