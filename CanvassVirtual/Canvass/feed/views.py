@@ -9,7 +9,7 @@ import json
 from django.contrib.auth.decorators import login_required
 from Canvass.decorators import ajax_required
 
-FEEDS_NUM_PAGES = 10
+FEEDS_NUM_PAGES = 7
 
 @login_required
 def feeds(request):
@@ -39,6 +39,7 @@ def load(request):
     if feed_source != 'all':
         all_feeds = all_feeds.filter(user__id=feed_source)
     paginator = Paginator(all_feeds, FEEDS_NUM_PAGES)
+
     try:
         feeds = paginator.page(page)
     except PageNotAnInteger:
