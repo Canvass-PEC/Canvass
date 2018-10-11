@@ -12,13 +12,13 @@ the second part of the project aims at allowing users to create their own intere
 ### Prerequisites
 
 The app is built using the following dependencies:
-*bleach==3.0.0
-Django==2.1
-Markdown==3.0.1
-Pillow==5.3.0
-pytz==2018.5
-six==1.11.0
-webencodings==0.5.1*
+*bleach==3.0.0 
+Django==2.1 
+Markdown==3.0.1 
+Pillow==5.3.0 
+pytz==2018.5 
+six==1.11.0 
+webencodings==0.5.1 *
 
 ### Installing
 Simply clone the repo and install the dependencies.Once that is done,the rest is like running a **django** web app.
@@ -26,7 +26,7 @@ Go to the directory where **manage.py** is present and type
 ```python
 python manage.py runserver
 ```
-Once this is done,goto
+Once this is done,goto 
 **127.0.0.1/8000** 
 on your browser.
 
