@@ -27,7 +27,7 @@ Go to the directory where **manage.py** is present and type
 python manage.py runserver
 ```
 in the terminal.Once this is done,goto   
-**127.0.0.1/8000**   
+```127.0.0.1/8000```   
 on your browser.
 
 
