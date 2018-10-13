@@ -1,20 +1,22 @@
-@import url(http://fonts.googleapis.com/css?family=Audiowide);
-
 body {
-  background-color: #f6f6f6;
+  background-color: rgb(220,220,220);
   padding-top: 70px;
 }
 
+a
+{
+    text-decoration:none !important;
+}
 header .navbar-brand {
   font-size: 1.4em;
   font-weight: 200;
-  font-family: "Audiowide", cursive;
+  font-family: PT cursive;
 }
 
 main .container {
   margin-bottom: 2em;
   border: 1px solid #ddd;
-  background-color: #ffffff;
+  background-color: rgb(240,240,240);
   padding-top: 1.2em;
   padding-bottom: 1.2em;
   border-radius: .3em;
