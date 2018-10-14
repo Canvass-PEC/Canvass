@@ -100,13 +100,11 @@ $(".vote").on("click",function () {
           if(text=="Upvoted")
             {
                 $(span).text("Upvote");
-                var val=$(".upvotes > span").first().text()-1;
                 $(".upvotes > span").first().text(val);
                 $(".upvote").text(val);
             }
           else
                 $(span).text("Downvote");
-                var val=$(".downvotes > span").first().text()-1;
                 $(".downvotes > span").first().text(val);
                 $(".downvote").text(val);
         }
