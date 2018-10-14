@@ -101,3 +101,18 @@ article .tags {
 .comment:last-child {
   border-bottom: none;
 }
+
+
+.options span.vote {
+  font-size: 1.1em;
+  color: rgb(144,144,144);
+}
+
+.options span.vote:hover {
+  cursor: pointer;
+  color: #428bca;
+}
+
+.options span.voted {
+  color: #333;
+}

@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from Canvass.decorators import ajax_required
 import markdown
 from django.template.loader import render_to_string
+from activity.models import Activity
+from django.db.models import Q
 
 def _articles(request, articles):
     paginator = Paginator(articles, 10)
@@ -106,3 +108,25 @@ def comment(request):
             return HttpResponseBadRequest()
     except Exception as e:
         return HttpResponseBadRequest()
+
+@login_required
+@ajax_required
+def vote(request):
+    article_id = request.POST['article']
+    article = Article.objects.get(pk=article_id)
+    vote = request.POST['vote']
+    user = request.user
+    activity = Activity.objects.filter(Q(activity_type=Activity.UP_VOTEA) | Q(activity_type=Activity.DOWN_VOTEA),
+                                   user=user, article=article_id)
+    if activity:
+        activity.delete()
+    if vote in [Activity.UP_VOTEA, Activity.DOWN_VOTEA]:
+        activity = Activity(activity_type=vote, user=user, article=article_id)
+        activity.save()
+
+    if request.user!=article.create_user:
+        if vote == Activity.UP_VOTEA :
+            request.user.profile.notify_upvoted_article(article)
+        else :
+            request.user.profile.notify_downvoted_article(article)
+    return HttpResponse(article.calculate_votes())

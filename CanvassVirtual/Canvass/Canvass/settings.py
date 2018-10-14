@@ -58,7 +58,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'Canvass.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

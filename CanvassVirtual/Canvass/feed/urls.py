@@ -29,6 +29,6 @@ urlpatterns = [
     path('update',update,name='update'),
     path('track_comments',track_comments,name='track_comments'),
     path('remove',remove,name='remove'),
-    path('<int:pk>',feed,name='feed')
+    path('<int:pk>/',feed,name='feed')
 
 ]

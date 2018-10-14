@@ -82,6 +82,19 @@ class Profile(models.Model):
                 to_user=question.user,
                 question=question).save()
 
+    def notify_upvoted_article(self, article):
+        if self.user != article.create_user:
+            Notification(notification_type=Notification.UPVOTED_ARTICLE,
+                from_user=self.user,
+                to_user=article.create_user,
+                article=article).save()
+
+    def notify_downvoted_article(self, article):
+        if self.user != article.create_user:
+            Notification(notification_type=Notification.DOWNVOTED_ARTICLE,
+                from_user=self.user,
+                to_user=article.create_user,
+                article=article).save()
 
 def create_user_profile(sender, instance, created, **kwargs):
     if created:

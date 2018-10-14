@@ -12,6 +12,6 @@
     <li><a href="{% url 'article:articles' %}">Articles</a></li>
     <li class="active">Article</li>
   </ol>
-  {% include 'articles/partial_article.html' with article=article %}
+  {% include 'articles/partial_article_with_votes.html' with article=article %}
   {% include 'articles/partial_article_comments.html' with article=article %}
 {% endblock main %}

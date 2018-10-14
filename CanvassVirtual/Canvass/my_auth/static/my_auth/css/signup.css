@@ -1,28 +1,26 @@
 body {
-  background-color: #006389;
+  background-color: rgb(220,220,220)
 }
 
 .logo {
   margin: 0;
   font-size: 3em;
   font-weight: 200;
-  font-family: "Audiowide", cursive;
   text-align: center;
   text-shadow: 1px 1px 0 #333333;
   line-height: 70px;
 }
 
 .logo a {
-  color: #92c35e;
+  color: rgb(100,149,237);
 }
 
 .logo a:hover, .logo a:focus {
-  color: #92c35e;
   text-decoration: none;
 }
 
 .signup {
-  background-color: #f6f6f6;
+  background-color: rgb(232,232,232);
   width: 70%;
   border-radius: 7px;
   margin: 10px auto 0;

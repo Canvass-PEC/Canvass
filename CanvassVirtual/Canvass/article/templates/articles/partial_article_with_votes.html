@@ -14,14 +14,30 @@
       {{ article.get_comments.count }} Comments
     </span>
     <span class="upvotes">
-      <span>{{ article.get_upvotes }} Upvotes</span>
+      <span>{{ article.get_upvotes }}</span>
+      <span>Upvotes</span>
     </span>
   <span class="downvotes">
-      <span>{{ article.get_downvotes }} Downvotes</span>
+    <span>{{ article.get_downvotes }}</span>
+    <span> Downvotes</span>
   </span>
 
   </div>
   <div class="content">
     {{ article.get_content_as_markdown|safe }}
+  </div>
+  <div class="options">
+    {% csrf_token %}
+    <input type="hidden" name="qid" value="{{ article.pk }}">
+    {% if request.user in article.get_upvoters %}
+        <span class="vote up-vote glyphicon glyphicon-chevron-up voted ">Upvoted</span>
+    {% else %}
+            <span class="vote up-vote glyphicon glyphicon-chevron-up ">Upvote</span>
+    {% endif %}
+    {% if request.user in article.get_downvoters %}
+        <span class="vote down-vote glyphicon glyphicon-chevron-up voted ">Downvoted</span>
+    {% else %}
+            <span class="vote down-vote glyphicon glyphicon-chevron-up ">Downvote</span>
+    {% endif %}
   </div>
 </article>

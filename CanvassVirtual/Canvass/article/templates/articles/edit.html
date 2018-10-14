@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
-
+{% load static  %}
 {% block head %}
   <script src="{% static 'article/js/articles.js' %}"></script>
 {% endblock head %}
 
-{% block content %}
+{% block main %}
   <ol class="breadcrumb">
     <li><a href="{% url 'article:articles' %}">Articles</a></li>
     <li><a href="{% url 'article:drafts' %}">Drafts</a></li>

@@ -53,4 +53,64 @@ $(function () {
     }
   });
 
+
+$(".vote").on("click",function () {
+    var span = $(this);
+    var article=$("input[name='qid']").val();
+    var csrf = $("input[name='csrfmiddlewaretoken']").val();
+    var vote = "";
+    if ($(this).hasClass("voted")) {
+      var vote = "R";
+    }
+    else if ($(this).hasClass("up-vote")) {
+      vote = "V";
+    }
+    else if ($(this).hasClass("down-vote")) {
+      vote = "E";
+
+    }
+    $.ajax({
+      url: '/articles/vote',
+      data: {
+        'article': article,
+        'vote': vote,
+        'csrfmiddlewaretoken': csrf
+      },
+      type: 'post',
+      cache: false,
+      success: function (data) {
+        var options = $(span).closest('.options');
+        $('.vote', options).removeClass('voted');
+        if (vote == 'V' || vote == 'E') {
+          $(span).addClass('voted');
+          var text=$(span).text();
+          if(text=="Upvote")
+          {
+            $(span).text("Upvoted");
+            $(span).next().text("Downvote");
+          }
+          else if(text=="Downvote")
+          {
+            $(span).text("Downvoted");
+            $(span).prev().text("Upvote");
+          }
+        }
+        else{
+         var text=$(span).text();
+          if(text=="Upvoted")
+            {
+                $(span).text("Upvote");
+                var val=$(".upvotes > span").first().text()-1;
+                $(".upvotes > span").first().text(val);
+                $(".upvote").text(val);
+            }
+          else
+                $(span).text("Downvote");
+                var val=$(".downvotes > span").first().text()-1;
+                $(".downvotes > span").first().text(val);
+                $(".downvote").text(val);
+        }
+      }
+    });
+  });
 });
