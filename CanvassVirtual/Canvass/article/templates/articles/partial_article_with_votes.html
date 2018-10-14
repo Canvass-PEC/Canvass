@@ -24,4 +24,10 @@
   <div class="content">
     {{ article.get_content_as_markdown|safe }}
   </div>
+  <div class="options">
+    {% csrf_token %}
+    <input type="hidden" name="qid" value="{{ article.pk }}">
+    <span class="vote up-vote glyphicon glyphicon-chevron-up {% if request.user in article.get_upvoters %} voted{% endif %}">Upvote</span>
+    <span class="vote down-vote glyphicon glyphicon-chevron-down {% if request.user in article.get_downvoters %} voted{% endif %}">Downvote</span>
+  </div>
 </article>

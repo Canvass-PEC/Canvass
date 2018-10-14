@@ -10,8 +10,8 @@ class Activity(models.Model):
     UP_VOTEA='V'
     ACTIVITY_TYPES = (
         (LIKE, 'Like'),
-        (UP_VOTE, 'Up Vote'),
-        (DOWN_VOTE, 'Down Vote'),
+        (UP_VOTE, 'Up Vote Answer'),
+        (DOWN_VOTE, 'Down Vote Answer'),
         (DOWN_VOTEA, 'Down Vote Article'),
         (UP_VOTEA, 'Up Vote Article'),
         )
@@ -56,7 +56,6 @@ class Notification(models.Model):
     _LIKED_TEMPLATE = u'<a href="/{0}/">{1}</a> liked your post: <a href="/feeds/{2}/">{3}</a>'
     _COMMENTED_TEMPLATE = u'<a href="/{0}/">{1}</a> commented on your post: <a href="/feeds/{2}/">{3}</a>'
     _ANSWERED_TEMPLATE = u'<a href="/{0}/">{1}</a> answered your question: <a href="/questions/{2}/">{3}</a>'
-    _EDITED_ARTICLE_TEMPLATE = u'<a href="/{0}/">{1}</a> edited your article: <a href="/article/{2}/">{3}</a>'
     _ALSO_COMMENTED_TEMPLATE = u'<a href="/{0}/">{1}</a> also commentend on the post: <a href="/feeds/{2}/">{3}</a>'
     _UPVOTED_ANSWER_TEMPLATE=u'<a href="/{0}/">{1}</a> upvoted your answer: <a href="/questions/{2}/">{3}</a>'
     _UPVOTED_ANSWER_TEMPLATE=u'<a href="/{0}/">{1}</a> upvoted your answer: <a href="/questions/{2}/">{3}</a>'

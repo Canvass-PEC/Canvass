@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from django.template.defaultfilters import slugify
 import markdown
-
+from activity.models import Activity
 class Article(models.Model):
     DRAFT = 'D'
     PUBLISHED = 'P'
@@ -19,10 +19,9 @@ class Article(models.Model):
     status = models.CharField(max_length=1, choices=STATUS, default=DRAFT)
     create_user = models.ForeignKey(User,on_delete=models.CASCADE)
     create_date = models.DateTimeField(auto_now_add=True)
-    update_date = models.DateTimeField(blank=True, null=True)
-    update_user = models.ForeignKey(User, null=True, blank=True, related_name="+",on_delete=models.CASCADE)
+    update_date = models.DateTimeField(blank=True, null=True,auto_now=True)
     upvotes=models.IntegerField(default=0)
-    down_upvotes=models.IntegerField(default=0)
+    downvotes=models.IntegerField(default=0)
 
     class Meta:
         verbose_name = _("Article")
@@ -44,6 +43,29 @@ class Article(models.Model):
 
     def get_content_as_markdown(self):
         return markdown.markdown(self.content, safe_mode='escape')
+
+    def get_upvoters(self):
+        upvotes = Activity.objects.filter(activity_type=Activity.UP_VOTEA, article=self.pk)
+        upvoters=[]
+        for upvoter in upvotes:
+            upvoters.append(upvoter.user)
+        return upvoters
+
+    def get_downvoters(self):
+        downvotes = Activity.objects.filter(activity_type=Activity.DOWN_VOTEA, article=self.pk)
+        downvoters = []
+        for downvoter in downvotes:
+            downvoters.append(downvoter.user)
+        return downvoters
+
+    def calculate_votes(self):
+        upvotes = Activity.objects.filter(activity_type=Activity.UP_VOTEA, article=self.pk).count()
+        downvotes = Activity.objects.filter(activity_type=Activity.DOWN_VOTEA, article=self.pk).count()
+        self.upvotes = upvotes
+        self.downvotes = downvotes
+        self.save()
+        return
+
 
     @staticmethod
     def get_published():

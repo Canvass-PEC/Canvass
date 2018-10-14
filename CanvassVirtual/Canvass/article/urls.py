@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from .views import articles,write,preview,drafts,comment,edit,article
+from .views import articles,write,preview,drafts,comment,edit,article,vote
 app_name="article"
 
 urlpatterns = [
@@ -23,6 +23,7 @@ urlpatterns = [
     path('write',write,name='write'),
     path('preview',preview,name='preview'),
     path('drafts',drafts,name='drafts'),
+    path('vote',vote,name='vote'),
     path('comment',comment,name='comment'),
     path('edit/<int:id>/',edit,name='edit'),
     path('<str:slug>/',article,name='article'),

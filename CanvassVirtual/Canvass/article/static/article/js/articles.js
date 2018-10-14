@@ -53,4 +53,47 @@ $(function () {
     }
   });
 
+
+$(".vote").click(function () {
+    var span = $(this);
+    var article=$("input[name='qid']").val();
+    var csrf = $("input[name='csrfmiddlewaretoken']").val();
+    var vote = "";
+    if ($(this).hasClass("voted")) {
+      var vote = "R";
+    }
+    else if ($(this).hasClass("up-vote")) {
+      vote = "V";
+    }
+    else if ($(this).hasClass("down-vote")) {
+      vote = "E";
+    }
+    $.ajax({
+      url: '/articles/vote',
+      data: {
+        'article': article,
+        'vote': vote,
+        'csrfmiddlewaretoken': csrf
+      },
+      type: 'post',
+      cache: false,
+      success: function (data) {
+        var options = $(span).closest('.options');
+        $('.vote', options).removeClass('voted');
+        if (vote == 'V' || vote == 'E') {
+          $(span).addClass('voted');
+        }
+      }
+    });
+  });
+
+
+
+
+
+
+
+
+
+
 });
