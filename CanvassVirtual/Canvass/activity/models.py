@@ -40,7 +40,7 @@ class Notification(models.Model):
     UPVOTED_ANSWER='U'
     DOWNVOTED_ANSWER='D'
     UPVOTED_ARTICLE='R'
-    DOWNVOTED_ARTICLE='C'
+    DOWNVOTED_ARTICLE='T'
 
     NOTIFICATION_TYPES = (
         (LIKED, 'Liked'),
@@ -58,9 +58,9 @@ class Notification(models.Model):
     _ANSWERED_TEMPLATE = u'<a href="/{0}/">{1}</a> answered your question: <a href="/questions/{2}/">{3}</a>'
     _ALSO_COMMENTED_TEMPLATE = u'<a href="/{0}/">{1}</a> also commentend on the post: <a href="/feeds/{2}/">{3}</a>'
     _UPVOTED_ANSWER_TEMPLATE=u'<a href="/{0}/">{1}</a> upvoted your answer: <a href="/questions/{2}/">{3}</a>'
-    _UPVOTED_ANSWER_TEMPLATE=u'<a href="/{0}/">{1}</a> upvoted your answer: <a href="/questions/{2}/">{3}</a>'
+    _DOWN_VOTED_ANSWER_TEMPLATE=u'<a href="/{0}/">{1}</a> upvoted your answer: <a href="/questions/{2}/">{3}</a>'
     _UPVOTED_ARTICLE_TEMPLATE = u'<a href="/{0}/">{1}</a> upvoted your article: <a href="/article/{2}/">{3}</a>'
-    _UPVOTED_ARTICLE_TEMPLATE = u'<a href="/{0}/">{1}</a> upvoted your article: <a href="/article/{2}/">{3}</a>'
+    _DOWNVOTED_ARTICLE_TEMPLATE = u'<a href="/{0}/">{1}</a> downvoted your article: <a href="/article/{2}/">{3}</a>'
 
     from_user = models.ForeignKey(User, related_name='+',on_delete=models.CASCADE)
     to_user = models.ForeignKey(User, related_name='+',on_delete=models.CASCADE)
@@ -78,6 +78,7 @@ class Notification(models.Model):
         ordering = ('-date',)
 
     def __str__(self):
+        print(self.notification_type)
         if self.notification_type == self.LIKED:
             return self._LIKED_TEMPLATE.format(
                 escape(self.from_user.username),

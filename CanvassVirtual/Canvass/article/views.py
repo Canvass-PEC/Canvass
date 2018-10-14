@@ -123,4 +123,10 @@ def vote(request):
     if vote in [Activity.UP_VOTEA, Activity.DOWN_VOTEA]:
         activity = Activity(activity_type=vote, user=user, article=article_id)
         activity.save()
+
+    if request.user!=article.create_user:
+        if vote == Activity.UP_VOTEA :
+            request.user.profile.notify_upvoted_article(article)
+        else :
+            request.user.profile.notify_downvoted_article(article)
     return HttpResponse(article.calculate_votes())
