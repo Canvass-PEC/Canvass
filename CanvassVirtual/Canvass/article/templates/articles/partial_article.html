@@ -17,4 +17,13 @@
   <div class="content">
     {{ article.get_content_as_markdown|safe }}
   </div>
+<div class="nothing">
+  {% if article. %}
+    <span>Upvote</span>
+  {% elif current_class==upvoted %}
+    <span>Downvote</span>
+  {% else %}
+    <span>Upvote</span>
+  {% endif  %}
+</div>
 </article>

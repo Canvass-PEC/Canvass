@@ -21,6 +21,8 @@ class Article(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(blank=True, null=True)
     update_user = models.ForeignKey(User, null=True, blank=True, related_name="+",on_delete=models.CASCADE)
+    upvotes=models.IntegerField(default=0)
+    down_upvotes=models.IntegerField(default=0)
 
     class Meta:
         verbose_name = _("Article")
@@ -48,6 +50,12 @@ class Article(models.Model):
         articles = Article.objects.filter(status=Article.PUBLISHED)
         return articles
 
+    def get_upvotes(self):
+        return self.upvotes
+
+
+    def get_downvotes(self):
+        return self.downvotes
 
     def get_summary(self):
         if len(self.content) > 255:
