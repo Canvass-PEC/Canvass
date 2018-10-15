@@ -15,7 +15,7 @@
 </div>
 <div class="well well-sm" id="comment-list">
   {% for comment in article.get_comments %}
-    {% include 'articles/partial_article_comment.html' with comment=comment %}
+    {% include 'articles/partial_article_comment.html' with comment=comment article=article %}
   {% empty %}
     <div style="padding: .6em 0">Be the first one to comment!</div>
   {% endfor %}

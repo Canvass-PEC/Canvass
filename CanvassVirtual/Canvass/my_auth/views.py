@@ -18,9 +18,6 @@ def signup(request):
             User.objects.create_user(username=username, password=password, email=email)
             user = authenticate(username=username, password=password)
             login(request)
-            welcome_post = u'{0} has joined the network.'.format(user.username, user.username)
-            feed = Feed(user=user, post=welcome_post)
-            feed.save()
             return redirect('/')
     else:
         return render(request, 'auth/signup.html', {'form': SignUpForm()})

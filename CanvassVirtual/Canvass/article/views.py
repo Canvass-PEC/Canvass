@@ -130,3 +130,22 @@ def vote(request):
         else :
             request.user.profile.notify_downvoted_article(article)
     return HttpResponse(article.calculate_votes())
+
+
+@login_required
+@ajax_required
+def like(request):
+    article_id = request.POST['article']
+    comment_id = request.POST['comment']
+    comment = ArticleComment.objects.get(pk=comment_id)
+    user = request.user
+    like = Activity.objects.filter(activity_type=Activity.LIKE, article=article_id, user=user,article_comment=comment_id)
+    if like:
+        user.profile.unotify_liked_comment(comment)
+        like.delete()
+        pass
+    else:
+        like = Activity(activity_type=Activity.LIKE, article=article_id, user=user,article_comment=comment_id)
+        like.save()
+        user.profile.notify_liked_comment(comment)
+    return HttpResponse(comment.calculate_likes())

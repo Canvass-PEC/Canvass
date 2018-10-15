@@ -1,4 +1,4 @@
-<article>
+<article id="{{ article.pk}}">
   <h2><a href="{% url 'article:article' article.slug %}">{{ article.title }}</a></h2>
   <div class="info">
     <span class="date">

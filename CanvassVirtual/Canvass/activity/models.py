@@ -14,6 +14,7 @@ class Activity(models.Model):
         (DOWN_VOTE, 'Down Vote Answer'),
         (DOWN_VOTEA, 'Down Vote Article'),
         (UP_VOTEA, 'Up Vote Article'),
+
         )
 
     user = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -23,6 +24,7 @@ class Activity(models.Model):
     question = models.IntegerField(null=True, blank=True)
     article = models.IntegerField(null=True, blank=True)
     answer = models.IntegerField(null=True, blank=True)
+    article_comment=models.IntegerField(null=True,blank=True)
 
     class Meta:
         verbose_name = 'Activity'
@@ -34,6 +36,7 @@ class Activity(models.Model):
 
 class Notification(models.Model):
     LIKED = 'L'
+    LIKED_COMMENT = 'E'
     COMMENTED = 'C'
     ANSWERED = 'A'
     ALSO_COMMENTED = 'S'
@@ -44,6 +47,7 @@ class Notification(models.Model):
 
     NOTIFICATION_TYPES = (
         (LIKED, 'Liked'),
+        (LIKED_COMMENT,'Liked'),
         (COMMENTED, 'Commented'),
         (UPVOTED_ANSWER,'Upvoted Answer'),
         (DOWNVOTED_ANSWER,'Downvoted Answer'),
@@ -54,6 +58,7 @@ class Notification(models.Model):
         )
 
     _LIKED_TEMPLATE = u'<a href="/{0}/">{1}</a> liked your post: <a href="/feeds/{2}/">{3}</a>'
+    _LIKED_COMMENT_TEMPLATE = u'<a href="/{0}/">{1}</a> liked your comment on: <a href="/articles/{2}/">{3}</a>'
     _COMMENTED_TEMPLATE = u'<a href="/{0}/">{1}</a> commented on your post: <a href="/feeds/{2}/">{3}</a>'
     _ANSWERED_TEMPLATE = u'<a href="/{0}/">{1}</a> answered your question: <a href="/questions/{2}/">{3}</a>'
     _ALSO_COMMENTED_TEMPLATE = u'<a href="/{0}/">{1}</a> also commentend on the post: <a href="/feeds/{2}/">{3}</a>'
@@ -69,6 +74,7 @@ class Notification(models.Model):
     question = models.ForeignKey('question.Question', null=True, blank=True,on_delete=models.CASCADE)
     answer = models.ForeignKey('question.Answer', null=True, blank=True,on_delete=models.CASCADE)
     article = models.ForeignKey('article.Article', null=True, blank=True,on_delete=models.CASCADE)
+    comment = models.ForeignKey('article.ArticleComment', null=True, blank=True,on_delete=models.CASCADE)
     notification_type = models.CharField(max_length=1, choices=NOTIFICATION_TYPES)
     is_read = models.BooleanField(default=False)
 
@@ -78,13 +84,19 @@ class Notification(models.Model):
         ordering = ('-date',)
 
     def __str__(self):
-        print(self.notification_type)
         if self.notification_type == self.LIKED:
             return self._LIKED_TEMPLATE.format(
                 escape(self.from_user.username),
                 escape(self.from_user.profile.get_screen_name()),
                 self.feed.pk,
                 escape(self.get_summary(self.feed.post))
+                )
+        if self.notification_type == self.LIKED_COMMENT:
+            return self._LIKED_COMMENT_TEMPLATE.format(
+                escape(self.from_user.username),
+                escape(self.from_user.profile.get_screen_name()),
+                self.comment.article.slug,
+                escape(self.get_summary(self.comment.comment))
                 )
         elif self.notification_type == self.COMMENTED:
             return self._COMMENTED_TEMPLATE.format(

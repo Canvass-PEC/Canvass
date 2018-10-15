@@ -116,3 +116,13 @@ article .tags {
 .options span.voted {
   color: #333;
 }
+
+div.interaction {
+  padding-top: .2em;
+  margin-left: 3.5em;
+}
+
+div.interaction a {
+  margin-right: .6em;
+  font-size: .8em;
+}

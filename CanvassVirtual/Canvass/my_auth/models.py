@@ -53,7 +53,19 @@ class Profile(models.Model):
                                         from_user=self.user,
                                         to_user=feed.user,
                                         feed=feed).delete()
+    def notify_liked_comment(self,comment):
+        if self.user != comment.user:
+            Notification(notification_type=Notification.LIKED_COMMENT,
+                         from_user=self.user,
+                         to_user=comment.user,
+                         comment=comment).save()
 
+    def unotify_liked_comment(self, comment):
+        if self.user != comment.user:
+            Notification.objects.filter(notification_type=Notification.LIKED_COMMENT,
+                                        from_user=self.user,
+                                        to_user=comment.user,
+                                        comment=comment).delete()
     def notify_commented(self, feed):
         if self.user != feed.user:
             Notification(notification_type=Notification.COMMENTED,

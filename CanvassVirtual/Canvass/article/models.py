@@ -97,7 +97,7 @@ class ArticleComment(models.Model):
     comment = models.CharField(max_length=500)
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-
+    likes=models.IntegerField(blank=True,default=0)
     class Meta:
         verbose_name = _("Article Comment")
         verbose_name_plural = _("Article Comments")
@@ -105,3 +105,20 @@ class ArticleComment(models.Model):
 
     def __str__(self):
         return u'{0} - {1}'.format(self.user.username, self.article.title)
+
+    def calculate_likes(self):
+        likes = Activity.objects.filter(activity_type=Activity.LIKE, article_comment=self.pk).count()
+        self.likes = likes
+        self.save()
+        return self.likes
+
+    def get_likes(self):
+        likes = Activity.objects.filter(activity_type=Activity.LIKE, article_comment=self.pk)
+        return likes
+
+    def get_likers(self):
+        likes = self.get_likes()
+        likers = []
+        for like in likes:
+            likers.append(like.user)
+        return likers

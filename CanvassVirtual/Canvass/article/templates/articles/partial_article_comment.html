@@ -1,6 +1,6 @@
 {% load humanize %}
 
-<div class="comment">
+<div class="comment" id="{{ comment.pk }}">
   <a href="{% url 'core:profile' comment.user.username %}"><img src="{{ comment.user.profile.get_picture }}" class="comment-portrait"></a>
   <div class="comment-text">
     <h5>
@@ -9,4 +9,21 @@
     </h5>
     <p>{{ comment.comment }}</p>
   </div>
+      <div class="interaction">
+       {% csrf_token %}
+        <input type="hidden" value="{{ article.pk  }}">
+      {% if user in comment.get_likers %}
+        <a href="#" class="like unlike">
+          <span class="glyphicon glyphicon-thumbs-up"></span>
+          <span class="text">Unlike</span>
+          (<span class="like-count">{{ comment.likes }}</span>)
+        </a>
+      {% else %}
+        <a href="#" class="like">
+          <span class="glyphicon glyphicon-thumbs-up"></span>
+          <span class="text">Like</span>
+          (<span class="like-count">{{ comment.likes }}</span>)
+        </a>
+      {% endif %}
+    </div>
 </div>

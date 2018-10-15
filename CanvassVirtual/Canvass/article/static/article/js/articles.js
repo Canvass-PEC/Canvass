@@ -111,4 +111,35 @@ $(".vote").on("click",function () {
       }
     });
   });
+
+    $("#comment-list").on("click", ".like", function () {
+    var like=$(this);
+    var comment = $(this).closest(".comment").attr("id");
+    var article =$("article").attr("id");
+    var csrf=$(this).prev().prev().val();
+    $.ajax({
+      url: '/articles/like',
+      data: {
+        'comment':comment,
+        'article':article,
+        'csrfmiddlewaretoken': csrf
+      },
+      type: 'post',
+      cache: false,
+      success: function (data) {
+        if (like.hasClass("unlike")) {
+          like.removeClass("unlike");
+          like.find(".text").text("Like");
+        }
+        else {
+          like.addClass("unlike");
+          like.find(".text").text("Unlike");
+        }
+        like.find(".like-count").text(data);
+      }
+    });
+    return false;
+  });
+
+
 });
