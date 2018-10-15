@@ -11,7 +11,7 @@ $(function () {
 
   $(".preview").click(function () {
     $.ajax({
-      url: '/articles/preview/',
+      url: '/articles/preview',
       data: $("form").serialize(),
       cache: false,
       type: 'post',
